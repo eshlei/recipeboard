@@ -14,7 +14,6 @@ from selenium.common.exceptions import TimeoutException
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('window-size=1920x1080');
-driver = webdriver.Chrome(options=chrome_options)
 
 def crawl(link: str, steps: int):
     '''Look for links to recipe pages on allrecipes.com
@@ -61,6 +60,7 @@ def scrape(link: str):
         raise ValueError('not a link to recipe page')
 
     # Get page source html
+    driver = webdriver.Chrome(options=chrome_options)
     driver.get(link)
     try:
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '//*[@class="feedback-list__items"]')))
@@ -69,6 +69,7 @@ def scrape(link: str):
         # warnings.warn(timeout)
         return None
     soup = BeautifulSoup(driver.page_source, 'html.parser')
+    driver.quit()
 
     # Extract recipe id from link
     page = dict()
@@ -164,7 +165,7 @@ if __name__ == '__main__':
     with open('data/allrecipes/links.txt', 'r') as links_f:
         for link in links_f:
             links.append(link.strip())
-    for link in tqdm.tqdm(links):
+    for link in tqdm.tqdm(links[1880:]):
         scrape_and_store(link)
     # with ThreadPoolExecutor(max_workers=16) as exe:
     #     exe.map(scrape_and_store, links)
