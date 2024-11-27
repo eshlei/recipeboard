@@ -9,10 +9,13 @@ import random
 
 from .models import User, Recipe
 
+startup = True
+
 def load_recipes(directory='../data/allrecipes/recipes'):
     '''
-    Add .txt files to `Recipe` table
+    Add .txt files to `Recipe` table. Called during startup in .apps.py
     '''
+
     for file_name in os.listdir(directory):
         if not file_name.endswith('.txt') or Recipe.objects.filter(file_name=file_name).exists():
             continue
@@ -24,11 +27,13 @@ def load_recipes(directory='../data/allrecipes/recipes'):
             recipe = Recipe(file_name=file_name, title=title, url=url, directions=directions, reviews=reviews)
             recipe.save()
 
-load_recipes()
-recipes = [recipe.get_text() for recipe in Recipe.objects.all()]
-vectorizer = TfidfVectorizer()
-tfidf_matrix = vectorizer.fit_transform(recipes)
-scores = cosine_similarity(tfidf_matrix)
+scores = None
+def on_startup():
+    load_recipes()
+    recipes = [recipe.get_text() for recipe in Recipe.objects.all()]
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(recipes)
+    scores = cosine_similarity(tfidf_matrix)
 
 def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
     # `user_likes` and `user_dislikes` are `Recipe` instances. See .model.py

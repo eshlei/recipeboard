@@ -5,23 +5,36 @@
 The following takes you through the steps of running the server in debug mode.
 
 1. Install required python packages.
-`pip install -r requirements.txt`
+
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 2. Remove existing migration files.
-`cd recipeboard`
-`rm -rf api/migrations`
+
+    ```bash
+    cd recipeboard
+    rm -rf api/migrations
+    ```
 
 3. Migrate to create database.
-`python manage.py makemigrations`
-`python manage.py migrate`
-`db.sqlite3` should now be in your working directory.
 
-4. Start server
-`python manage.py runserver`
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+    `db.sqlite3` should now be next to `manage.py`.
+
+4. Start server.
+
+    ```bash
+    python manage.py runserver
+    ```
 
 ## API Endpoints
 
-### GET /api/recipe
+### GET /api/recipe/
 
 Get recipe feed according to user preference.
 
@@ -38,16 +51,16 @@ Response
 {
     "data": [
         {
-            "id": <int>,
-            "title": <string>,
-            "directions": <string>,
-            "url": <string>
+            "id": "int",
+            "title": "string",
+            "directions": "string",
+            "url": "string"
        }
     ]
 }
 ```
 
-### GET /api/user/`userId`
+### GET /api/user/`userId`/
 
 Get user profile, including likes and dislikes.
 
@@ -62,34 +75,36 @@ Response
 ```json
 {
     "data": {
-        "id": <int>,
-        "name": <string>,
+        "id": "int",
+        "name": "string",
         "likes": [
             {
-                "id": <string>,
-                "title": <string>
+                "id": "string",
+                "title": "string"
             }
         ],
         "dislikes": [
             {
-                "id": <string>,
-                "title": <string>
+                "id": "string",
+                "title": "string"
             }
         ]
     }
 }
 ```
 
-### POST /api/user/`userId`
+### POST /api/user/`userId`/
 
 Add a recipe to user's like or dislike list
 
 Request
 
-| Param    | Type | Description |
-| -------- | ---- |----------- |
-| recipeId | int  | Recipe id   |
-| like     | int  | $\begin{cases}1 & \text{if user likes the recipe} \\-1 & \text{if user dislikes the recipe} \\\end{cases}$ |
+| Param    | Type | Description                                           |
+| -------- | ---- |------------------------------------------------------ |
+| recipeId | int  | Recipe id                                             |
+| like     | int  | Whether the user likes the recipe for not. See below. |
+
+$$like=\begin{cases}1 & \text{if user likes the recipe} \\-1 & \text{if user dislikes the recipe} \\\end{cases}$$
 
 Response
 
@@ -97,7 +112,7 @@ Response
 {}
 ```
 
-### POST /api/user
+### POST /api/user/
 
 Create user and initalize likes.
 
@@ -106,14 +121,14 @@ Request
 | Param   | Type   | Description                      |
 | ------- | ------ | -------------------------------- |
 | cuisine | string | Name of cuisine selected by user |
-| name    | string | Username *(optional)* |
+| name    | string | Username *(optional)*            |
 
 Response
 
 ```json
 {
     "data": {
-        "userId": <string>
+        "userId": "string"
     }
 }
 ```
