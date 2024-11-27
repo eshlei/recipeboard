@@ -10,23 +10,17 @@ The following takes you through the steps of running the server in debug mode.
     pip install -r requirements.txt
     ```
 
-2. Remove existing migration files.
+2. Migrate to create database.
 
     ```bash
     cd recipeboard
-    rm -rf api/migrations
-    ```
-
-3. Migrate to create database.
-
-    ```bash
     python manage.py makemigrations
     python manage.py migrate
     ```
 
     `db.sqlite3` should now be next to `manage.py`.
 
-4. Start server.
+3. Start server.
 
     ```bash
     python manage.py runserver
