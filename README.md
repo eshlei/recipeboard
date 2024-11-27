@@ -98,7 +98,7 @@ Request
 | recipeId | int  | Recipe id                                             |
 | like     | int  | Whether the user likes the recipe for not. See below. |
 
-$$like=\begin{cases}1 & \text{if user likes the recipe} \\-1 & \text{if user dislikes the recipe} \end{cases}$$
+$$like=\begin{cases}1 & \text{if user likes the recipe} \\ -1 & \text{if user dislikes the recipe} \end{cases}$$
 
 Response
 
