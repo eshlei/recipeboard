@@ -9,7 +9,7 @@ import random
 
 from .models import User, Recipe
 
-startup = True
+scores = None
 
 def load_recipes(directory='../data/allrecipes/recipes'):
     '''
@@ -27,15 +27,18 @@ def load_recipes(directory='../data/allrecipes/recipes'):
             recipe = Recipe(file_name=file_name, title=title, url=url, directions=directions, reviews=reviews)
             recipe.save()
 
-scores = None
-def on_startup():
-    load_recipes()
+def calculate_scores():
+    global scores
     recipes = [recipe.get_text() for recipe in Recipe.objects.all()]
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(recipes)
     scores = cosine_similarity(tfidf_matrix)
 
 def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
+    # Make sure scores are calculated
+    if not scores:
+        calculate_scores()
+
     # `user_likes` and `user_dislikes` are `Recipe` instances. See .model.py
     user_likes = [recipe for recipe in user.likes.all()]
     user_dislikes = [recipe for recipe in user.dislikes.all()]
@@ -60,6 +63,10 @@ def apply_feedback(user: User, doc: Recipe, like=True):
         user.dislikes.add(doc)
 
 def get_cuisine_docs(cuisine_type: str, n=5) -> List[Recipe]:
+    # Make sure scores are loaded
+    if not scores:
+        calculate_scores()
+
     relevant_docs = []
     for recipe in Recipe.objects.all():
         if cuisine_type.lower() in recipe.get_text().lower():

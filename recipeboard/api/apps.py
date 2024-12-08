@@ -8,5 +8,5 @@ class ApiConfig(AppConfig):
 
 @receiver(post_migrate)
 def add_initial_data(sender, **kwargs):
-    from .feed import on_startup
-    on_startup()
+    from .feed import load_recipes
+    load_recipes()
