@@ -62,7 +62,7 @@ def apply_feedback(user: User, doc: Recipe, like=True):
     else:
         user.dislikes.add(doc)
 
-def get_cuisine_docs(cuisine_type: str, n=1) -> List[Recipe]:
+def get_cuisine_docs(cuisine_type: str, n=3) -> List[Recipe]:
     # Make sure scores are loaded
     if not isinstance(scores, np.ndarray):
         calculate_scores()
