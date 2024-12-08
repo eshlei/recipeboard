@@ -45,7 +45,7 @@ def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
     
     # `similarity_scores` is an 1D numpy array
     if user_likes:
-        doc_indices = [recipe.id for recipe in user_likes]
+        doc_indices = [recipe.id - 1 for recipe in user_likes]
         similarity_scores = np.mean(scores[doc_indices], axis=0)
     else:
         similarity_scores = np.mean(scores, axis=0)
@@ -62,14 +62,14 @@ def apply_feedback(user: User, doc: Recipe, like=True):
     else:
         user.dislikes.add(doc)
 
-def get_cuisine_docs(cuisine_type: str, n=5) -> List[Recipe]:
+def get_cuisine_docs(cuisine_type: str, n=1) -> List[Recipe]:
     # Make sure scores are loaded
     if not isinstance(scores, np.ndarray):
         calculate_scores()
 
     relevant_docs = []
     for recipe in Recipe.objects.all():
-        if cuisine_type.lower() in recipe.get_text().lower():
+        if cuisine_type.lower() in recipe.title.lower():
             relevant_docs.append(recipe)
     return random.sample(relevant_docs, k=n)
 
