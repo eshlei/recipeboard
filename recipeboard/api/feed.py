@@ -36,7 +36,7 @@ def calculate_scores():
 
 def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
     # Make sure scores are calculated
-    if not scores:
+    if scores != None:
         calculate_scores()
 
     # `user_likes` and `user_dislikes` are `Recipe` instances. See .model.py
@@ -64,7 +64,7 @@ def apply_feedback(user: User, doc: Recipe, like=True):
 
 def get_cuisine_docs(cuisine_type: str, n=5) -> List[Recipe]:
     # Make sure scores are loaded
-    if not scores:
+    if scores != None:
         calculate_scores()
 
     relevant_docs = []
