@@ -25,12 +25,12 @@ const RecipeFeed: React.FC<RecipeFeedProps> = async ({ userId }) => {
   return (
     <div className="flex flex-col items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-8 pt-0 pb-20 gap-12 max-w-[1024px] font-[family-name:var(--font-geist-sans)]">
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 sticky top-0 p-8 max-md:pb-0 -mx-8 bg-white flex">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 sticky top-0 p-8 pb-12 max-md:pb-0 -mx-8 bg-gradient-to-b from-white from-80% to-transparent flex">
           <h1 className="text-lg font-bold">🍳 Recipe Board</h1>
           <div className="flex-grow" />
           <span>Hi, {user.name}!</span>
         </div>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 -mb-4 text-gray-600">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 -my-4 text-gray-600">
           <span>Recipes that you might like:</span>
         </div>
         {recipes.map((recipe) => (
@@ -42,6 +42,9 @@ const RecipeFeed: React.FC<RecipeFeedProps> = async ({ userId }) => {
             onLike={handleLike}
           />
         ))}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-600">
+          You've reached the end of your feed
+        </div>
       </div>
     </div>
   );
