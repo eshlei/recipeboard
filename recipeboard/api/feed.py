@@ -8,6 +8,7 @@ from typing import List
 import random
 
 from .models import User, Recipe
+from recipeboard.settings import SIMILARITY_FUNCTION
 
 scores = None
 
@@ -32,7 +33,10 @@ def calculate_scores():
     recipes = [recipe.get_text() for recipe in Recipe.objects.all()]
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(recipes)
-    scores = cosine_similarity(tfidf_matrix)
+    if SIMILARITY_FUNCTION == 'tf-idf':
+        scores = cosine_similarity(tfidf_matrix)
+    elif SIMILARITY_FUNCTION == 'dot-product':
+        scores = (tfidf_matrix @ tfidf_matrix.T).toarray()
 
 def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
     # Make sure scores are calculated
@@ -45,8 +49,9 @@ def vsm_get_docs(user: User, relevant=True, n=10) -> List[Recipe]:
     
     # `similarity_scores` is an 1D numpy array
     if user_likes:
-        doc_indices = [recipe.id - 1 for recipe in user_likes]
-        similarity_scores = np.mean(scores[doc_indices], axis=0)
+        liked_doc_indices = [recipe.id - 1 for recipe in user_likes]
+        disliked_doc_indices = [recipe.id - 1 for recipe in user_dislikes]
+        similarity_scores = 3 * np.mean(scores[liked_doc_indices], axis=0) - np.mean(scores[disliked_doc_indices], axis=0)
     else:
         similarity_scores = np.mean(scores, axis=0)
     
